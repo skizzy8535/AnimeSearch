@@ -1,0 +1,36 @@
+
+/* Class = "UILabel"; text = "Label"; ObjectID = "6HI-YL-eoI"; */
+"6HI-YL-eoI.text" = "Label";
+
+/* Class = "UINavigationItem"; title = "Favorites"; ObjectID = "HDn-eO-CRY"; */
+"HDn-eO-CRY.title" = "Favorites";
+
+/* Class = "UILabel"; text = "10"; ObjectID = "NXF-0i-oc2"; */
+"NXF-0i-oc2.text" = "10";
+
+/* Class = "UITabBarItem"; title = "Favorite"; ObjectID = "czo-Bs-KFS"; */
+"czo-Bs-KFS.title" = "Favorite";
+
+/* Class = "UITabBarItem"; title = "Rank"; ObjectID = "f6Z-3I-7Pi"; */
+"f6Z-3I-7Pi.title" = "Rank";
+
+/* Class = "UILabel"; text = "1"; ObjectID = "hz8-ec-DmH"; */
+"hz8-ec-DmH.text" = "1";
+
+/* Class = "UILabel"; text = " SubType:"; ObjectID = "m4u-EB-XTK"; */
+"m4u-EB-XTK.text" = " SubType:";
+
+/* Class = "UITabBarItem"; title = "Favorite"; ObjectID = "mrh-Ii-yld"; */
+"mrh-Ii-yld.title" = "Favorite";
+
+/* Class = "UILabel"; text = "Rank :"; ObjectID = "nwK-Re-ml8"; */
+"nwK-Re-ml8.text" = "Rank :";
+
+/* Class = "UILabel"; text = "Label"; ObjectID = "p8W-07-MwI"; */
+"p8W-07-MwI.text" = "Label";
+
+/* Class = "UILabel"; text = "/"; ObjectID = "q9f-EN-ghU"; */
+"q9f-EN-ghU.text" = "/";
+
+/* Class = "UILabel"; text = "Type :"; ObjectID = "uS9-SE-BrQ"; */
+"uS9-SE-BrQ.text" = "Type :";
