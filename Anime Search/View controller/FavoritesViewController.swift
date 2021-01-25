@@ -9,6 +9,7 @@ import UIKit
 import CoreData
 
 
+@available(iOS 13.0, *)
 class FavoritesViewController: UIViewController,UITableViewDelegate,UITableViewDataSource {
  
     @IBOutlet weak var selectedSegement: UISegmentedControl!
@@ -17,15 +18,26 @@ class FavoritesViewController: UIViewController,UITableViewDelegate,UITableViewD
     
     var container = (UIApplication.shared.delegate as! AppDelegate).persistentContainer
     
+    var selection = 0
     var allSavedAnime = [FavoriteAnime]()
     var allSavedManga = [FavoriteManga]()
     var allSavedPerson = [FavoritePerson]()
     var allSavedCharacter = [FavoriteCharacter]()
     
+    
+    lazy var refreshHelper: UIRefreshControl = {
+        let refreshControl = UIRefreshControl()
+        refreshControl.addTarget(self, action: #selector(refreshData), for: .valueChanged)
+        
+        return refreshControl
+    }()
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         favoritesTable.delegate = self
         favoritesTable.dataSource = self
+        favoritesTable.refreshControl = refreshHelper
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -152,10 +164,24 @@ class FavoritesViewController: UIViewController,UITableViewDelegate,UITableViewD
                 }).resume()
             }
         }
-        
-        
-        
         return cell!
+    }
+    
+    
+    @objc func refreshData() {
+        if selectedSegement.selectedSegmentIndex == 0 {
+            fetchAllSavedAnime()
+        }else if selectedSegement.selectedSegmentIndex == 1 {
+            fetchAllSavedMagna()
+        }else if selectedSegement.selectedSegmentIndex == 2{
+            fetchAllSavedPerson()
+        }else if selectedSegement.selectedSegmentIndex == 3{
+            fetchAllSavedCharacter()
+        }
+        
+        refreshHelper.endRefreshing()
+        
+        favoritesTable.reloadData()
     }
     
     @IBAction func changeSegment(_ sender: Any) {
@@ -171,14 +197,11 @@ class FavoritesViewController: UIViewController,UITableViewDelegate,UITableViewD
         let request = NSFetchRequest<FavoriteAnime>(entityName: entityName)
         request.returnsObjectsAsFaults = false
         do {
-            let array = try context.fetch(request)
-            allSavedAnime = array as [FavoriteAnime]
+            let animeArray = try context.fetch(request)
+            allSavedAnime = animeArray as [FavoriteAnime]
         } catch  {
             print("error")
         }
-        
-        
-        
     }
 
     
@@ -188,8 +211,8 @@ class FavoritesViewController: UIViewController,UITableViewDelegate,UITableViewD
         let request = NSFetchRequest<FavoriteManga>(entityName: entityName)
         request.returnsObjectsAsFaults = false
         do {
-            let array = try context.fetch(request)
-            allSavedManga = array as [FavoriteManga]
+            let mangaArray = try context.fetch(request)
+            allSavedManga = mangaArray as [FavoriteManga]
         } catch  {
             print("error")
         }
@@ -201,8 +224,8 @@ class FavoritesViewController: UIViewController,UITableViewDelegate,UITableViewD
         let request = NSFetchRequest<FavoritePerson>(entityName: entityName)
         request.returnsObjectsAsFaults = false
         do {
-            let array = try context.fetch(request)
-            allSavedPerson = array as [FavoritePerson]
+            let personArray = try context.fetch(request)
+            allSavedPerson = personArray as [FavoritePerson]
 
         } catch  {
             print("error")
@@ -215,15 +238,42 @@ class FavoritesViewController: UIViewController,UITableViewDelegate,UITableViewD
         let request = NSFetchRequest<FavoriteCharacter>(entityName: entityName)
         request.returnsObjectsAsFaults = false
         do {
-            let array = try context.fetch(request)
-            allSavedCharacter = array as [FavoriteCharacter]
+            let characterArray = try context.fetch(request)
+            allSavedCharacter = characterArray as [FavoriteCharacter]
 
         } catch  {
             print("error")
         }
     }
   
-    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        
+            let number = indexPath.row
+            var favoriteAnimeResult:FavoriteAnime
+            var favoriteMangaResult:FavoriteManga
+            var favoritePersonResult:FavoritePerson
+            var favoriteCharacterResult:FavoriteCharacter
+        
+        if selectedSegement.selectedSegmentIndex == 0{
+            favoriteAnimeResult = allSavedAnime[number]
+            selection = Int(favoriteAnimeResult.identity)
+            self.performSegue(withIdentifier: "showAnimeFavoriteSegue", sender: self)
+        }else if selectedSegement.selectedSegmentIndex == 1{
+            favoriteMangaResult = allSavedManga[number]
+            selection = Int(favoriteMangaResult.identity)
+            self.performSegue(withIdentifier: "showMangaFavoriteSegue", sender: self)
+        }else if selectedSegement.selectedSegmentIndex == 2{
+            favoritePersonResult = allSavedPerson[number]
+            selection = Int(favoritePersonResult.identity)
+            self.performSegue(withIdentifier: "showPersonFavoriteSegue", sender: self)
+        }else if selectedSegement.selectedSegmentIndex == 3{
+            favoriteCharacterResult = allSavedCharacter[number]
+            selection = Int(favoriteCharacterResult.identity)
+            self.performSegue(withIdentifier: "showCharacterFavoriteSegue", sender: self)
+        }
+        
+        
+    }
      
      func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         if selectedSegement.selectedSegmentIndex == 0{
@@ -253,7 +303,20 @@ class FavoritesViewController: UIViewController,UITableViewDelegate,UITableViewD
         }
      }
    
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "showAnimeFavoriteSegue"{
+            let favortiteAnimeVC = segue.destination as? AnimeResultViewController
+            favortiteAnimeVC?.selection = selection
+        }else if segue.identifier == "showMangaFavoriteSegue"{
+            let favortiteMangaVC = segue.destination as? MangaResultViewController
+            favortiteMangaVC?.selection = selection
+        }else if segue.identifier == "showPersonFavoriteSegue"{
+            let favortitePersonVC = segue.destination as? PersonResultViewController
+            favortitePersonVC?.selection = selection
+        }else if segue.identifier == "showCharacterFavoriteSegue"{
+            let favortiteCharacterVC = segue.destination as? CharacterResultViewController
+            favortiteCharacterVC?.selection = selection
+        }
+    }
 }
-
-   
-   

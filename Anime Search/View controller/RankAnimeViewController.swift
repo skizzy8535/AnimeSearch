@@ -6,7 +6,7 @@
 //
 
 import UIKit
-import SafariServices
+import Network
 
 enum AnimeSection: Int {
     case topRankedAnime
@@ -20,9 +20,10 @@ class RankAnimeViewController: UIViewController,UITableViewDelegate,UITableViewD
     
     @IBOutlet weak var AnimeRankTable: UITableView!
     
+    let connectionMonitor = NWPathMonitor()
     var clientSide:GetDatasFromJikan = AnimeDataFromJikan.shared
     var downloadTask:URLSessionDataTask?
-    
+
     var query = "top"
     var page = 1
     var type = "anime"
@@ -32,6 +33,7 @@ class RankAnimeViewController: UIViewController,UITableViewDelegate,UITableViewD
     var topAiringArray = [AnimeData]()
     var topUpcomingArray = [AnimeData]()
     var topMovieArray = [AnimeData]()
+    var selection = 0
     
     let loadingIndicator = UIActivityIndicatorView()
     
@@ -41,10 +43,22 @@ class RankAnimeViewController: UIViewController,UITableViewDelegate,UITableViewD
         self.AnimeRankTable.delegate = self
         loadingIndicator.color = .systemRed
         loadingIndicator.startAnimating()
-        getTopRank()
-        getTopAiring()
-        getTopUpcoming()
-        getTopMovie()
+    
+        connectionMonitor.pathUpdateHandler = { path in
+             if path.status == .satisfied {
+                self.getTopRank()
+                self.getTopAiring()
+                self.getTopUpcoming()
+                self.getTopMovie()
+             } else if path.status == .unsatisfied {
+                DispatchQueue.main.async {
+                    self.AnimeRankTable.isHidden = true
+                    self.loadingIndicator.stopAnimating()
+                    self.ifNoConnection()
+                }
+             }
+          }
+        connectionMonitor.start(queue: DispatchQueue.global())
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -64,14 +78,8 @@ class RankAnimeViewController: UIViewController,UITableViewDelegate,UITableViewD
     
     func getTopRank(){
         subtype = "favorite"
-        AnimeRankTable.isHidden = true
         downloadTask = clientSide.getAnimeList(query: query, type: type, page: page, subtype: subtype!, completion: { [self](topAnime, error) in
             self.downloadTask = nil
-            if let _ = error {
-              DispatchQueue.main.async {
-                errorMessage()
-              }
-            }
             
             if let rankItems = topAnime?.top{
                 self.topRankedArray.append(contentsOf:rankItems)
@@ -86,11 +94,6 @@ class RankAnimeViewController: UIViewController,UITableViewDelegate,UITableViewD
         subtype = "airing"
         downloadTask = clientSide.getAnimeList(query: query, type: type, page: page, subtype: subtype!, completion: { [self] (topAnime, error) in
             self.downloadTask = nil
-            if let _ = error {
-                DispatchQueue.main.async {
-                  errorMessage()
-                }
-            }
             
             if let airItems = topAnime?.top{
                 self.topAiringArray.append(contentsOf:airItems)
@@ -106,11 +109,6 @@ class RankAnimeViewController: UIViewController,UITableViewDelegate,UITableViewD
         subtype = "upcoming"
         downloadTask = clientSide.getAnimeList(query: query, type: type, page: page, subtype: subtype!, completion: { [self] (topAnime, error) in
             self.downloadTask = nil
-            if let _ = error {
-                DispatchQueue.main.async {
-                  errorMessage()
-                }
-            }
             
             if let upcomingItems = topAnime?.top{
                 self.topUpcomingArray.append(contentsOf: upcomingItems)
@@ -126,11 +124,6 @@ class RankAnimeViewController: UIViewController,UITableViewDelegate,UITableViewD
         subtype = "movie"
         downloadTask = clientSide.getAnimeList(query: query, type: type, page: page, subtype: subtype!, completion: { [self] (topAnime, error) in
             self.downloadTask = nil
-            if let _ = error {
-                DispatchQueue.main.async {
-                  errorMessage()
-                }
-            }
             
             if let upcomingItems = topAnime?.top{
                 self.topMovieArray.append(contentsOf: upcomingItems)
@@ -144,12 +137,14 @@ class RankAnimeViewController: UIViewController,UITableViewDelegate,UITableViewD
         })
     }
     
-    func errorMessage(){
-        let alertController = UIAlertController(title: "Error", message: "Can't load Anime Item", preferredStyle: .alert)
+    
+    func ifNoConnection(){
+        let alertController = UIAlertController(title: " No Internet Collection ", message: "Make sure that Wi-Fi or cellular data is turned on" ,preferredStyle: .alert)
         let alertAction = UIAlertAction(title: "OK", style: .default, handler: nil)
         alertController.addAction(alertAction)
         self.present(alertController, animated: true, completion: nil)
     }
+        
     
     func numberOfSections(in tableView: UITableView) -> Int {
         AnimeSection.numberOfSections
@@ -198,7 +193,6 @@ class RankAnimeViewController: UIViewController,UITableViewDelegate,UITableViewD
     
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         guard let animeRankCell = cell as? AnimeRankCell else { return }
-        
         animeRankCell.setCollectionViewDataSourceDelegate(dataSourceDelegate: self, forRow: indexPath.section)
     }
   }
@@ -277,40 +271,32 @@ extension RankAnimeViewController:UICollectionViewDataSource,UICollectionViewDel
         return cell!
         
     }
-    
+ 
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         
         let topAnimeItem:AnimeData
-        switch AnimeSection(rawValue: collectionView.tag) {
+        
+    switch AnimeSection(rawValue: collectionView.tag) {
         case .topRankedAnime:
             topAnimeItem = topRankedArray[indexPath.row]
-            if let url = URL(string: topAnimeItem.url!){
-                 let safari = SFSafariViewController(url: url)
-                 present(safari, animated: true, completion: nil)
-            }
+            selection = topAnimeItem.identity
+            self.performSegue(withIdentifier: "showAnimeRankSegue", sender: self)
         case .topAiringAnime:
             topAnimeItem = topAiringArray[indexPath.row]
-            if let url = URL(string: topAnimeItem.url!){
-                 let safari = SFSafariViewController(url: url)
-                 present(safari, animated: true, completion: nil)
-            }
+            selection = topAnimeItem.identity
+            self.performSegue(withIdentifier: "showAnimeRankSegue", sender: self)
         case .topUpcomingAnime:
             topAnimeItem = topUpcomingArray[indexPath.row]
-            if let url = URL(string: topAnimeItem.url!){
-                 let safari = SFSafariViewController(url: url)
-                 present(safari, animated: true, completion: nil)
-            }
+            selection = topAnimeItem.identity
+            self.performSegue(withIdentifier: "showAnimeRankSegue", sender: self)
         case .topMovieAnime :
             topAnimeItem = topMovieArray[indexPath.row]
-            if let url = URL(string: topAnimeItem.url!){
-                 let safari = SFSafariViewController(url: url)
-                 present(safari, animated: true, completion: nil)
-            }
+            selection = topAnimeItem.identity
+            self.performSegue(withIdentifier: "showAnimeRankSegue", sender: self)
         default :
-            if let url = URL(string: "https://myanimelist.net/"){
-                 let safari = SFSafariViewController(url: url)
-                 present(safari, animated: true, completion: nil)
-            }
+            topAnimeItem = topRankedArray[indexPath.row]
+            selection = topAnimeItem.identity
+            self.performSegue(withIdentifier: "showAnimeRankSegue", sender: self)
         }
       }
     
@@ -328,5 +314,12 @@ extension RankAnimeViewController:UICollectionViewDataSource,UICollectionViewDel
     }
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         return CGSize(width: 155, height: 270)
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier=="showAnimeRankSegue"{
+            let animeResultVC = segue.destination as? AnimeResultViewController
+            animeResultVC?.selection = selection
+        }
     }
 }

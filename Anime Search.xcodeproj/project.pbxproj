@@ -25,9 +25,21 @@
 		175FAC49259F7C3F00D8B626 /* AnimeCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 175FAC48259F7C3F00D8B626 /* AnimeCollectionViewCell.swift */; };
 		176A7A5925ABBD20001D23E4 /* FavoritesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 176A7A5825ABBD20001D23E4 /* FavoritesViewController.swift */; };
 		176A7A5E25ABBF57001D23E4 /* FavoriteTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 176A7A5D25ABBF57001D23E4 /* FavoriteTableViewCell.swift */; };
+		1774D87A25BA76A400D0B68B /* ShowPersonResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1774D87925BA76A400D0B68B /* ShowPersonResult.swift */; };
+		1774D87F25BA76C700D0B68B /* ShowCharacterResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1774D87E25BA76C700D0B68B /* ShowCharacterResult.swift */; };
+		1774D89625BB056400D0B68B /* AnimeResultViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1774D89525BB056400D0B68B /* AnimeResultViewController.swift */; };
+		1774D89B25BB05C300D0B68B /* MangaResultViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1774D89A25BB05C200D0B68B /* MangaResultViewController.swift */; };
+		1774D8A025BB065F00D0B68B /* PersonResultViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1774D89F25BB065E00D0B68B /* PersonResultViewController.swift */; };
+		1774D8A525BB068300D0B68B /* CharacterResultViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1774D8A425BB068300D0B68B /* CharacterResultViewController.swift */; };
+		1774D8AD25BB095300D0B68B /* ScheduleTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1774D8AC25BB095300D0B68B /* ScheduleTableViewCell.swift */; };
 		178063F325A1C7FF00F2BD1A /* MagnaRankCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 178063F225A1C7FF00F2BD1A /* MagnaRankCell.swift */; };
 		178063F825A1C88400F2BD1A /* MagnaCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 178063F725A1C88400F2BD1A /* MagnaCollectionViewCell.swift */; };
+		179417C325B96CC5005041C3 /* ShowACGInformation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 179417C225B96CC5005041C3 /* ShowACGInformation.swift */; };
+		179417C825B977A4005041C3 /* ScheduleViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 179417C725B977A4005041C3 /* ScheduleViewController.swift */; };
+		179B08BC25BEA83B00F94C73 /* characterApperanceCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 179B08BB25BEA83B00F94C73 /* characterApperanceCollectionViewCell.swift */; };
 		17D2622325B7114700BF0F4A /* AnimeDataFromJikan.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17D2622225B7114700BF0F4A /* AnimeDataFromJikan.swift */; };
+		17DAE40825BD61B9004E6832 /* ShowSchedule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17DAE40725BD61B9004E6832 /* ShowSchedule.swift */; };
+		17DAE40D25BDAC3E004E6832 /* supportingCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17DAE40C25BDAC3E004E6832 /* supportingCollectionViewCell.swift */; };
 		17EAE555259C2A8900243201 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17EAE554259C2A8900243201 /* AppDelegate.swift */; };
 		17EAE557259C2A8900243201 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17EAE556259C2A8900243201 /* SceneDelegate.swift */; };
 		17EAE55E259C2A8A00243201 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 17EAE55D259C2A8A00243201 /* Assets.xcassets */; };
@@ -74,9 +86,21 @@
 		175FAC48259F7C3F00D8B626 /* AnimeCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimeCollectionViewCell.swift; sourceTree = "<group>"; };
 		176A7A5825ABBD20001D23E4 /* FavoritesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavoritesViewController.swift; sourceTree = "<group>"; };
 		176A7A5D25ABBF57001D23E4 /* FavoriteTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavoriteTableViewCell.swift; sourceTree = "<group>"; };
+		1774D87925BA76A400D0B68B /* ShowPersonResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShowPersonResult.swift; sourceTree = "<group>"; };
+		1774D87E25BA76C700D0B68B /* ShowCharacterResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShowCharacterResult.swift; sourceTree = "<group>"; };
+		1774D89525BB056400D0B68B /* AnimeResultViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimeResultViewController.swift; sourceTree = "<group>"; };
+		1774D89A25BB05C200D0B68B /* MangaResultViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MangaResultViewController.swift; sourceTree = "<group>"; };
+		1774D89F25BB065E00D0B68B /* PersonResultViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersonResultViewController.swift; sourceTree = "<group>"; };
+		1774D8A425BB068300D0B68B /* CharacterResultViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CharacterResultViewController.swift; sourceTree = "<group>"; };
+		1774D8AC25BB095300D0B68B /* ScheduleTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ScheduleTableViewCell.swift; path = "Anime Search/View controller/ScheduleTableViewCell.swift"; sourceTree = SOURCE_ROOT; };
 		178063F225A1C7FF00F2BD1A /* MagnaRankCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MagnaRankCell.swift; sourceTree = "<group>"; };
 		178063F725A1C88400F2BD1A /* MagnaCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MagnaCollectionViewCell.swift; sourceTree = "<group>"; };
+		179417C225B96CC5005041C3 /* ShowACGInformation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShowACGInformation.swift; sourceTree = "<group>"; };
+		179417C725B977A4005041C3 /* ScheduleViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleViewController.swift; sourceTree = "<group>"; };
+		179B08BB25BEA83B00F94C73 /* characterApperanceCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = characterApperanceCollectionViewCell.swift; sourceTree = "<group>"; };
 		17D2622225B7114700BF0F4A /* AnimeDataFromJikan.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnimeDataFromJikan.swift; sourceTree = "<group>"; };
+		17DAE40725BD61B9004E6832 /* ShowSchedule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShowSchedule.swift; sourceTree = "<group>"; };
+		17DAE40C25BDAC3E004E6832 /* supportingCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = supportingCollectionViewCell.swift; sourceTree = "<group>"; };
 		17EAE551259C2A8900243201 /* Anime Search.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Anime Search.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		17EAE554259C2A8900243201 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		17EAE556259C2A8900243201 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -125,7 +149,12 @@
 				1733A0C8259EEDD700A3CE8E /* RankAnimeViewController.swift */,
 				175FAC17259F356A00D8B626 /* RankMagnaViewController.swift */,
 				17F872B325A35F3C00D695B8 /* SearchViewController.swift */,
+				179417C725B977A4005041C3 /* ScheduleViewController.swift */,
+				1774D89525BB056400D0B68B /* AnimeResultViewController.swift */,
 				176A7A5825ABBD20001D23E4 /* FavoritesViewController.swift */,
+				1774D89A25BB05C200D0B68B /* MangaResultViewController.swift */,
+				1774D89F25BB065E00D0B68B /* PersonResultViewController.swift */,
+				1774D8A425BB068300D0B68B /* CharacterResultViewController.swift */,
 			);
 			path = "View controller";
 			sourceTree = "<group>";
@@ -133,12 +162,15 @@
 		175FAC44259F7C1500D8B626 /* View */ = {
 			isa = PBXGroup;
 			children = (
+				1774D8AC25BB095300D0B68B /* ScheduleTableViewCell.swift */,
 				1741E05525A4289F001696C1 /* SearchTableViewCell.swift */,
 				175FAC20259F39E700D8B626 /* AnimeRankCell.swift */,
 				178063F225A1C7FF00F2BD1A /* MagnaRankCell.swift */,
 				175FAC48259F7C3F00D8B626 /* AnimeCollectionViewCell.swift */,
 				178063F725A1C88400F2BD1A /* MagnaCollectionViewCell.swift */,
 				176A7A5D25ABBF57001D23E4 /* FavoriteTableViewCell.swift */,
+				17DAE40C25BDAC3E004E6832 /* supportingCollectionViewCell.swift */,
+				179B08BB25BEA83B00F94C73 /* characterApperanceCollectionViewCell.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -228,6 +260,10 @@
 			children = (
 				17EAE593259C81B500243201 /* TopAnime.swift */,
 				1741E05B25A4B2CF001696C1 /* SearchData.swift */,
+				179417C225B96CC5005041C3 /* ShowACGInformation.swift */,
+				17DAE40725BD61B9004E6832 /* ShowSchedule.swift */,
+				1774D87925BA76A400D0B68B /* ShowPersonResult.swift */,
+				1774D87E25BA76C700D0B68B /* ShowCharacterResult.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -362,11 +398,17 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				179B08BC25BEA83B00F94C73 /* characterApperanceCollectionViewCell.swift in Sources */,
 				17D2622325B7114700BF0F4A /* AnimeDataFromJikan.swift in Sources */,
+				17DAE40825BD61B9004E6832 /* ShowSchedule.swift in Sources */,
+				1774D8A025BB065F00D0B68B /* PersonResultViewController.swift in Sources */,
+				1774D8AD25BB095300D0B68B /* ScheduleTableViewCell.swift in Sources */,
 				17EAE594259C81B500243201 /* TopAnime.swift in Sources */,
 				175FAC49259F7C3F00D8B626 /* AnimeCollectionViewCell.swift in Sources */,
 				174E4D3C25B04C450073751D /* FavoriteCharacter+CoreDataProperties.swift in Sources */,
+				1774D89B25BB05C300D0B68B /* MangaResultViewController.swift in Sources */,
 				178063F825A1C88400F2BD1A /* MagnaCollectionViewCell.swift in Sources */,
+				1774D89625BB056400D0B68B /* AnimeResultViewController.swift in Sources */,
 				178063F325A1C7FF00F2BD1A /* MagnaRankCell.swift in Sources */,
 				17EAE555259C2A8900243201 /* AppDelegate.swift in Sources */,
 				175FAC2B259F3E4000D8B626 /* AnimeRankCell.swift in Sources */,
@@ -374,13 +416,19 @@
 				17EAE557259C2A8900243201 /* SceneDelegate.swift in Sources */,
 				176A7A5925ABBD20001D23E4 /* FavoritesViewController.swift in Sources */,
 				174E4D3B25B04C450073751D /* FavoriteCharacter+CoreDataClass.swift in Sources */,
+				179417C325B96CC5005041C3 /* ShowACGInformation.swift in Sources */,
+				179417C825B977A4005041C3 /* ScheduleViewController.swift in Sources */,
+				1774D8A525BB068300D0B68B /* CharacterResultViewController.swift in Sources */,
 				1733A0C9259EEDD700A3CE8E /* RankAnimeViewController.swift in Sources */,
 				174E4D3625B04C450073751D /* FavoritePerson+CoreDataProperties.swift in Sources */,
 				1741E05625A4289F001696C1 /* SearchTableViewCell.swift in Sources */,
+				1774D87F25BA76C700D0B68B /* ShowCharacterResult.swift in Sources */,
 				174E4D3A25B04C450073751D /* FavoriteManga+CoreDataProperties.swift in Sources */,
 				1741E05C25A4B2CF001696C1 /* SearchData.swift in Sources */,
 				17F872B425A35F3C00D695B8 /* SearchViewController.swift in Sources */,
+				1774D87A25BA76A400D0B68B /* ShowPersonResult.swift in Sources */,
 				174E4D3925B04C450073751D /* FavoriteManga+CoreDataClass.swift in Sources */,
+				17DAE40D25BDAC3E004E6832 /* supportingCollectionViewCell.swift in Sources */,
 				1733A0DB259EF53100A3CE8E /* AnimeSearchData.xcdatamodeld in Sources */,
 				174E4D3525B04C450073751D /* FavoritePerson+CoreDataClass.swift in Sources */,
 				174E4D3825B04C450073751D /* FavoriteAnime+CoreDataProperties.swift in Sources */,

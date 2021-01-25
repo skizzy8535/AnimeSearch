@@ -8,7 +8,7 @@
 import Foundation
 
 
-struct  SearchData:Codable{
+struct SearchData:Codable{
   var results : [SearchResults]?
 }
 

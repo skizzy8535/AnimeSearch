@@ -6,7 +6,8 @@
 //
 
 import UIKit
-import SafariServices
+import Network
+
 
 enum RankMagna:Int {
     case topRankedMagna
@@ -17,16 +18,20 @@ enum RankMagna:Int {
 
 class RankMagnaViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
+    
     @IBOutlet weak var MagnaTableView: UITableView!
     var query = "top"
     var type = "manga"
     var page = 1
     var subtype:String? = "favorite"
+    var selection = 0
     
     var clientSide:GetDatasFromJikan = AnimeDataFromJikan.shared
     var downloadTask :URLSessionDataTask?
-    let loadingIndicator = UIActivityIndicatorView()
+    let connectionMonitor = NWPathMonitor()
     
+    let loadingIndicator = UIActivityIndicatorView()
+
     var topRankedArray = [AnimeData]()
     var topOneShotsArray = [AnimeData]()
     var topDoujinArray = [AnimeData]()
@@ -37,10 +42,24 @@ class RankMagnaViewController: UIViewController, UITableViewDelegate, UITableVie
         self.MagnaTableView.dataSource = self
         loadingIndicator.color = .systemRed
         loadingIndicator.startAnimating()
-        setupLoadingIndicator()
         getTopRankedMagna()
         getTopOneShotsMagna()
         getTopDoujinMagna()
+
+         connectionMonitor.pathUpdateHandler = { path in
+              if path.status == .satisfied {
+                self.getTopRankedMagna()
+                self.getTopOneShotsMagna()
+                self.getTopDoujinMagna()
+              } else if path.status == .unsatisfied {
+                 DispatchQueue.main.async {
+                     self.MagnaTableView.isHidden = true
+                     self.loadingIndicator.stopAnimating()
+                     self.ifNoConnection()
+                 }
+              }
+           }
+         connectionMonitor.start(queue: DispatchQueue.global())
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -59,15 +78,9 @@ class RankMagnaViewController: UIViewController, UITableViewDelegate, UITableVie
     }
     
     func getTopRankedMagna(){
-        MagnaTableView.isHidden = true
         downloadTask = clientSide.getAnimeList(query: query, type: type, page: page, subtype: subtype!, completion: {[self] (topAnime, error) in
             self.downloadTask = nil
-            if error != nil{
-                DispatchQueue.main.async {
-                    errorMessage()
-                }
-            }
-            
+       
             if let topItem = topAnime?.top{
                 self.topRankedArray.append(contentsOf:topItem)
                 DispatchQueue.main.async {
@@ -83,12 +96,6 @@ class RankMagnaViewController: UIViewController, UITableViewDelegate, UITableVie
         downloadTask = clientSide.getAnimeList(query: query, type: type, page: page, subtype: subtype!, completion: { [self] (topAnime, error) in
             self.downloadTask = nil
             
-            if error != nil{
-                DispatchQueue.main.async {
-                    errorMessage()
-                }
-            }
-            
             if let oneshotsItem = topAnime?.top{
                 self.topOneShotsArray.append(contentsOf:oneshotsItem)
                 DispatchQueue.main.async {
@@ -102,11 +109,6 @@ class RankMagnaViewController: UIViewController, UITableViewDelegate, UITableVie
         subtype = "doujin"
         downloadTask = clientSide.getAnimeList(query: query, type: type, page: page, subtype: subtype!, completion: { [self] (topAnime, error) in
             self.downloadTask = nil
-            if error != nil{
-                DispatchQueue.main.async {
-                    errorMessage()
-                }
-            }
             
             if let doujinItem = topAnime?.top{
                 self.topDoujinArray+=doujinItem
@@ -119,6 +121,14 @@ class RankMagnaViewController: UIViewController, UITableViewDelegate, UITableVie
             }
          })
     }
+    
+    func ifNoConnection(){
+        let alertController = UIAlertController(title: " No Internet Collection ", message: "Make sure that Wi-Fi or cellular data is turned on" ,preferredStyle: .alert)
+        let alertAction = UIAlertAction(title: "OK", style: .default, handler: nil)
+        alertController.addAction(alertAction)
+        self.present(alertController, animated: true, completion: nil)
+    }
+    
     
     func numberOfSections(in tableView: UITableView) -> Int {
         RankMagna.numberOfSections
@@ -166,13 +176,6 @@ class RankMagnaViewController: UIViewController, UITableViewDelegate, UITableVie
         return 30
     }
     
-    
-    func errorMessage(){
-        let alertController = UIAlertController(title: "Error", message: "Can't load Anime Item", preferredStyle: .alert)
-        let alertAction = UIAlertAction(title: "OK", style: .default, handler: nil)
-        alertController.addAction(alertAction)
-        self.present(alertController, animated: true, completion: nil)
-    }
     
 }
 
@@ -241,31 +244,24 @@ extension RankMagnaViewController:UICollectionViewDelegate,UICollectionViewDataS
     
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        let topAnimeItem:AnimeData
+        var topMangaItem:AnimeData
         switch RankMagna(rawValue: collectionView.tag) {
         case .topRankedMagna:
-            topAnimeItem = topRankedArray[indexPath.row]
-            if let url = URL(string: topAnimeItem.url!){
-                 let safari = SFSafariViewController(url: url)
-                 present(safari, animated: true, completion: nil)
-            }
+            topMangaItem = topRankedArray[indexPath.row]
+            selection = topMangaItem.identity
+            performSegue(withIdentifier: "showMangaRankSegue", sender: self)
         case .topOneShotsMagna:
-            topAnimeItem = topOneShotsArray[indexPath.row]
-            if let url = URL(string: topAnimeItem.url!){
-                 let safari = SFSafariViewController(url: url)
-                 present(safari, animated: true, completion: nil)
-            }
+            topMangaItem = topOneShotsArray[indexPath.row]
+            selection = topMangaItem.identity
+            performSegue(withIdentifier: "showMangaRankSegue", sender: self)
         case .topDoujinMagna:
-            topAnimeItem = topDoujinArray[indexPath.row]
-            if let url = URL(string: topAnimeItem.url!){
-                 let safari = SFSafariViewController(url: url)
-                 present(safari, animated: true, completion: nil)
-            }
+            topMangaItem = topDoujinArray[indexPath.row]
+            selection = topMangaItem.identity
+            performSegue(withIdentifier: "showMangaRankSegue", sender: self)
         default :
-            if let url = URL(string: "https://myanimelist.net/"){
-                 let safari = SFSafariViewController(url: url)
-                 present(safari, animated: true, completion: nil)
-            }
+            topMangaItem = topRankedArray[indexPath.row]
+            selection = topMangaItem.identity
+            performSegue(withIdentifier: "showMangaRankSegue", sender: self)
         }
     }
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
@@ -281,5 +277,12 @@ extension RankMagnaViewController:UICollectionViewDelegate,UICollectionViewDataS
     }
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
         return 0
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "showMangaRankSegue" {
+            let mangaResultVC = segue.destination as? MangaResultViewController
+            mangaResultVC?.selection = selection
+        }
     }
 }

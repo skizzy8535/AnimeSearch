@@ -11,7 +11,7 @@ struct TopAnime: Codable {
   let top: [AnimeData]?
 }
 
-struct AnimeData: Codable, Equatable{
+struct AnimeData: Codable{
   let identity: Int
   let rank: Int
   let title: String?

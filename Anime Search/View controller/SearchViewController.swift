@@ -6,11 +6,11 @@
 //
 
 import UIKit
-import SafariServices
+import Network
 import CoreData
 
+@available(iOS 13.0, *)
 class SearchViewController: UIViewController,UISearchResultsUpdating,UITableViewDelegate,UITableViewDataSource, UISearchBarDelegate{
-      
 
     var searchController:UISearchController!
     
@@ -18,10 +18,11 @@ class SearchViewController: UIViewController,UISearchResultsUpdating,UITableView
     @IBOutlet weak var selectedSegment: UISegmentedControl!
     
     
-    let activityIndicator = UIActivityIndicatorView()
     var type:String? = "anime"
     var clientSide:GetDatasFromJikan = AnimeDataFromJikan.shared
     var fetchSearchTask :URLSessionDataTask?
+    let connectionMonitor = NWPathMonitor()
+    let activityIndicator = UIActivityIndicatorView()
     
     var animeResults = [SearchResults]()
     var mangaResults = [SearchResults]()
@@ -32,7 +33,6 @@ class SearchViewController: UIViewController,UISearchResultsUpdating,UITableView
     let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
     
     var selection = 0
-    
     var saveSearchedAnime :[FavoriteAnime]?
     var saveSearchedMagna :[FavoriteManga]?
     var saveSearchedPerson :[FavoritePerson]?
@@ -44,14 +44,23 @@ class SearchViewController: UIViewController,UISearchResultsUpdating,UITableView
         searchView.dataSource = self
         searchView.isHidden = true
         searchControllerHelper()
+        
+        connectionMonitor.pathUpdateHandler = { path in
+        if path.status == .unsatisfied {
+           DispatchQueue.main.async {
+               self.ifNoConnection()
+           }
+        }
+     }
+            
+        connectionMonitor.start(queue: DispatchQueue.global())
     }
-
-    
-    
+ 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         setupActivityIndicator()
     }
+    
     var bannedSearchWords = ["Loli", "Lolita", "Lolicon", "Roricon", "Shotacon",
                              "Shota", "Yaoi", "Ecchi", "Hentai", "loli", "lolita",
                              "lolicon", "roricon","shotacon", "shota", "yaoi",
@@ -97,10 +106,7 @@ class SearchViewController: UIViewController,UISearchResultsUpdating,UITableView
         type = "anime"
         fetchSearchTask = clientSide.getSearchResult(type: type!, keyword:  searchController.searchBar.text, completion: {[self]  (searchTopAnime, error) in
             self.fetchSearchTask = nil
-            if let _ = error{
-                self.errorMessage()
-            }
-            
+                       
             if let searchedResult = searchTopAnime?.results{
                 self.animeResults.append(contentsOf: searchedResult)
                 DispatchQueue.main.async {
@@ -116,10 +122,7 @@ class SearchViewController: UIViewController,UISearchResultsUpdating,UITableView
         type = "manga"
         fetchSearchTask = clientSide.getSearchResult(type: type!, keyword: searchController.searchBar.text, completion: { [self] (searchTopAnime, error) in
             self.fetchSearchTask = nil
-            if let _ = error{
-                self.errorMessage()
-            }
-
+     
             if let searchResult = searchTopAnime?.results{
                 self.mangaResults.append(contentsOf: searchResult)
                 DispatchQueue.main.async {
@@ -135,10 +138,7 @@ class SearchViewController: UIViewController,UISearchResultsUpdating,UITableView
         type = "person"
         fetchSearchTask = clientSide.getSearchResult(type: type!, keyword:  searchController.searchBar.text, completion: { [self] (searchTopAnime, error) in
             self.fetchSearchTask = nil
-            if let _ = error{
-                self.errorMessage()
-            }
-
+         
             if let searchResult = searchTopAnime?.results{
                 self.personResults.append(contentsOf: searchResult)
                 DispatchQueue.main.async {
@@ -154,10 +154,7 @@ class SearchViewController: UIViewController,UISearchResultsUpdating,UITableView
         type = "character"
     fetchSearchTask = clientSide.getSearchResult(type: type!, keyword:  searchController.searchBar.text, completion: {[self] (searchTopAnime, error) in
             self.fetchSearchTask = nil
-            if let _ = error{
-                self.errorMessage()
-            }
-
+          
             if let searchResult = searchTopAnime?.results{
                 self.characterResults.append(contentsOf: searchResult)
                 DispatchQueue.main.async {
@@ -194,9 +191,6 @@ class SearchViewController: UIViewController,UISearchResultsUpdating,UITableView
         }
     }
     
-    var isFavorite:Bool = false
-    var cellImage = UIImage(named: "heart")
-
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = searchView.dequeueReusableCell(withIdentifier: "searchTableViewCell", for: indexPath) as? SearchTableViewCell
         let number = indexPath.row
@@ -204,7 +198,6 @@ class SearchViewController: UIViewController,UISearchResultsUpdating,UITableView
         
             if selectedSegment.selectedSegmentIndex == 0{
                 results = animeResults[number]
-                selection = animeResults[number].identity
                 cell?.resultSearchName.text = results.title
                 cell?.resultImage.image = UIImage(contentsOfFile:"MAL")
                 
@@ -221,7 +214,6 @@ class SearchViewController: UIViewController,UISearchResultsUpdating,UITableView
                 
             }else if selectedSegment.selectedSegmentIndex == 1{
                 results = mangaResults[number]
-                selection = mangaResults[number].identity
                 cell?.resultSearchName.text = results.title
                 cell?.resultImage.image = UIImage(contentsOfFile:"MAL")
                 
@@ -236,7 +228,6 @@ class SearchViewController: UIViewController,UISearchResultsUpdating,UITableView
                 }
             }else if selectedSegment.selectedSegmentIndex == 2{
                 results = personResults[number]
-                selection = personResults[number].identity
                 
                 cell?.resultSearchName.text = results.name
                 cell?.resultImage.image = UIImage(contentsOfFile:"MAL")
@@ -252,8 +243,7 @@ class SearchViewController: UIViewController,UISearchResultsUpdating,UITableView
                 }
             }else if selectedSegment.selectedSegmentIndex == 3{
                 results = characterResults[number]
-                selection = characterResults[number].identity
-                
+                               
                 cell?.resultSearchName.text = results.name
                 cell?.resultImage.image = UIImage(contentsOfFile:"MAL")
                 
@@ -271,14 +261,16 @@ class SearchViewController: UIViewController,UISearchResultsUpdating,UITableView
         
         return cell!
     }
-    
+
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let results :SearchResults
+        var results :SearchResults
         
          if selectedSegment.selectedSegmentIndex == 0 {
             let newFavoriteAnime = NSEntityDescription.insertNewObject(forEntityName: "FavoriteAnime", into: context) as! FavoriteAnime
+            
                 results = animeResults[indexPath.row]
+            
                 let optionMenu = UIAlertController(title: nil, message: "Choose Option", preferredStyle: .actionSheet)
                 let addToFavorite = UIAlertAction(title: "Add to Favorite Anime", style: .default) { (action) in
                
@@ -290,11 +282,11 @@ class SearchViewController: UIViewController,UISearchResultsUpdating,UITableView
                     self.container.saveContext()
                     
                 }
-                let goToWebPage = UIAlertAction(title: "See Anime Details..", style: .default) { (action) in
-                    if let url = URL(string: results.url){
-                        let safari = SFSafariViewController(url: url)
-                        self.present(safari, animated: true, completion: nil)
-                        }
+            
+                let goToDetailPage = UIAlertAction(title: "See Anime Details..", style: .default) { (action) in
+                    
+                    self.selection = results.identity
+                    self.performSegue(withIdentifier: "showAnimeSearchSegue", sender: self )
                     self.container.checkIfExists(FavoriteAnime.self, identity: newFavoriteAnime.identity)
                 }
             
@@ -303,13 +295,15 @@ class SearchViewController: UIViewController,UISearchResultsUpdating,UITableView
                 }
             
                 optionMenu.addAction(addToFavorite)
-                optionMenu.addAction(goToWebPage)
+                optionMenu.addAction(goToDetailPage)
                 optionMenu.addAction(cancelAction)
                 self.present(optionMenu, animated: true, completion: nil)
         
          }else if selectedSegment.selectedSegmentIndex == 1 {
             let newFavoriteMagna = NSEntityDescription.insertNewObject(forEntityName: "FavoriteManga", into: context) as! FavoriteManga
+            
                 results = mangaResults[indexPath.row]
+            
                 let optionMenu = UIAlertController(title: nil, message: "Choose Option", preferredStyle: .actionSheet)
                 let addToFavorite = UIAlertAction(title: "Add to Favorite Magna", style: .default) { (action) in
                     newFavoriteMagna.name = results.title
@@ -317,14 +311,11 @@ class SearchViewController: UIViewController,UISearchResultsUpdating,UITableView
                     newFavoriteMagna.identity = Float(results.identity)
                     newFavoriteMagna.isSaved = true
                     self.container.saveContext()
-                    print("RRRRRR \(newFavoriteMagna)")
             }
             
-                let goToWebPage = UIAlertAction(title: "See Manga Details..", style: .default) { (action) in
-                   if let url = URL(string: results.url){
-                   let safari = SFSafariViewController(url: url)
-                   self.present(safari, animated: true, completion: nil)
-                }
+                let goToDetailPage = UIAlertAction(title: "See Manga Details..", style: .default) { (action) in
+                    self.selection = results.identity
+                    self.performSegue(withIdentifier: "showMangaSearchSegue", sender: self )
                     self.container.checkIfExists(FavoriteManga.self, identity: newFavoriteMagna.identity)
             }
                 let cancelAction = UIAlertAction(title: "Cancel", style: .cancel) { (action) in
@@ -332,7 +323,7 @@ class SearchViewController: UIViewController,UISearchResultsUpdating,UITableView
                 }
         
                optionMenu.addAction(addToFavorite)
-               optionMenu.addAction(goToWebPage)
+               optionMenu.addAction(goToDetailPage)
                optionMenu.addAction(cancelAction)
             self.present(optionMenu, animated: true, completion: nil)
             
@@ -346,13 +337,10 @@ class SearchViewController: UIViewController,UISearchResultsUpdating,UITableView
                     newFavoritePerson.identity = Float(results.identity)
                     newFavoritePerson.isSaved = true
                     self.container.saveContext()
-                    print("RRRRRR \(newFavoritePerson)")
         }
-                let goToWebPage = UIAlertAction(title: "See Person Details..", style: .default) { (action) in
-                   if let url = URL(string: results.url){
-                   let safari = SFSafariViewController(url: url)
-                   self.present(safari, animated: true, completion: nil)
-                }
+                let goToDetailPage = UIAlertAction(title: "See Person Details..", style: .default) { (action) in
+                    self.selection = results.identity
+                    self.performSegue(withIdentifier: "showPersonSearchSegue", sender: self )
                     self.container.checkIfExists(FavoritePerson.self, identity: newFavoritePerson.identity)
             }
             
@@ -361,7 +349,7 @@ class SearchViewController: UIViewController,UISearchResultsUpdating,UITableView
                 }
             
                 optionMenu.addAction(addToFavorite)
-                optionMenu.addAction(goToWebPage)
+                optionMenu.addAction(goToDetailPage)
                 optionMenu.addAction(cancelAction)
             self.present(optionMenu, animated: true, completion: nil)
             
@@ -375,14 +363,12 @@ class SearchViewController: UIViewController,UISearchResultsUpdating,UITableView
                     newFavoriteCharacter.identity = Float(results.identity)
                     newFavoriteCharacter.isSaved = true
                     self.container.saveContext()
-                    print("RRRRRR \(newFavoriteCharacter)")
 
           }
-                let goToWebPage = UIAlertAction(title: "See Character Details..", style: .default) { (action) in
-                   if let url = URL(string: results.url){
-                   let safari = SFSafariViewController(url: url)
-                   self.present(safari, animated: true, completion: nil)
-                }
+                let goToDetailPage = UIAlertAction(title: "See Character Details..", style: .default) { (action) in
+                    self.selection = results.identity
+                    print(self.selection)
+                    self.performSegue(withIdentifier: "showCharacterSearchSegue", sender: self )
                     self.container.checkIfExists(FavoriteCharacter.self, identity: newFavoriteCharacter.identity)
             }
             
@@ -391,7 +377,7 @@ class SearchViewController: UIViewController,UISearchResultsUpdating,UITableView
                 }
             
                optionMenu.addAction(addToFavorite)
-               optionMenu.addAction(goToWebPage)
+               optionMenu.addAction(goToDetailPage)
                optionMenu.addAction(cancelAction)
             self.present(optionMenu, animated: true, completion: nil)
          }
@@ -430,6 +416,7 @@ class SearchViewController: UIViewController,UISearchResultsUpdating,UITableView
             }
         }else if searchController.searchBar.text?.count == 0{
             searchView.isHidden = true
+            searchControllerHelper()
         }
     }
     
@@ -440,12 +427,32 @@ class SearchViewController: UIViewController,UISearchResultsUpdating,UITableView
            characterResults.removeAll()
     }
     
-    func errorMessage(){
-        let alertController = UIAlertController(title: "Error", message: "Can't load Search Item", preferredStyle: .alert)
+    
+    func ifNoConnection(){
+        let alertController = UIAlertController(title: " No Internet Collection ", message: "Make sure that Wi-Fi or cellular data is turned on" ,preferredStyle: .alert)
         let alertAction = UIAlertAction(title: "OK", style: .default, handler: nil)
         alertController.addAction(alertAction)
         self.present(alertController, animated: true, completion: nil)
     }
+    
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "showAnimeSearchSegue"{
+            let animeDetailsVC = segue.destination as? AnimeResultViewController
+            animeDetailsVC?.selection = selection
+        }else if segue.identifier == "showMangaSearchSegue"{
+            let mangaDetailsVC = segue.destination as? MangaResultViewController
+            mangaDetailsVC?.selection = selection
+        }else if segue.identifier == "showPersonSearchSegue"{
+            let personDetailsVC = segue.destination as? PersonResultViewController
+            personDetailsVC?.selection = selection
+        }else if segue.identifier == "showCharacterSearchSegue"{
+            let characterDetailsVC = segue.destination as? CharacterResultViewController
+            characterDetailsVC?.selection = selection
+            
+        }
+    }
+
 }
 
 
