@@ -6,6 +6,16 @@
 //
 //
 
+
+
+
+
+
+
+
+
+
+
 import Foundation
 import CoreData
 
@@ -22,6 +32,10 @@ extension FavoriteAnime {
     @NSManaged public var isSaved: Bool
 
 }
+
+
+
+
 
 extension FavoriteAnime : Identifiable {
 

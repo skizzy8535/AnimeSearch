@@ -87,19 +87,20 @@ class AnimeDataFromJikan:GetDatasFromJikan{
                     }
                 }
         }
-        
-        
-        
-        
+    
         task.resume()
         return task
     }
     
-    func showAnimeResult<Type>(animeModel:Type? = nil , error:Error? = nil , completion:@escaping (Type?,Error?)->Void){
+    func showAnimeResult<Type>(animeModel:Type? = nil , error:Error? = nil ,completion:@escaping (Type?,Error?)->Void){
         DispatchQueue.main.async {
             completion(animeModel,error)
         }
     }
+    
+    
+    
+    
     
     
     // Ex:  https://api.jikan.moe/v3/anime/5114

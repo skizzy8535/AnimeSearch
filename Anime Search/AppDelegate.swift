@@ -57,6 +57,10 @@ extension NSPersistentContainer {
         }
     }
     
+    
+    
+      
+    
     func checkIfExists<T: NSManagedObject>(_ objectType: T.Type, identity: Float) {
     
         let entityName = String(describing: objectType)
@@ -75,6 +79,30 @@ extension NSPersistentContainer {
         }
         
     }
+    
+    
+    func delete<T: NSManagedObject>(_ objectType: T.Type, identity: Float) {
+        let entityName = String(describing: objectType)
+        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: entityName)
+        fetchRequest.predicate = NSPredicate(format: "identity == %f", identity)
+        
+        fetchRequest.returnsObjectsAsFaults = false
+        
+        do {
+            let results = try self.viewContext.fetch(fetchRequest) as? [NSManagedObject]
+            
+            if let results = results , results.count > 0 {
+                for result in results{
+                        viewContext.delete(result)
+                    }
+            
+                
+            }
+        } catch {
+            print(error)
+        }
+    }
+    
     
     
     func checkIfDuplicate<T: NSManagedObject>(_ objectType: T.Type,identity: Float) {
@@ -101,31 +129,5 @@ extension NSPersistentContainer {
     
     
     
-    func delete<T: NSManagedObject>(_ objectType: T.Type, identity: Float) {
-        let entityName = String(describing: objectType)
-        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: entityName)
-        fetchRequest.predicate = NSPredicate(format: "identity == %f", identity)
-        
-        fetchRequest.returnsObjectsAsFaults = false
-        
-        do {
-            let results = try self.viewContext.fetch(fetchRequest) as? [NSManagedObject]
-            
-            if let results = results , results.count > 0 {
-                for result in results{
-                        viewContext.delete(result)
-                         do {
-                            try viewContext.save()
-                            print("Deleted successfully")
-                         } catch {
-                            print(error)
-                         }
-                    }
-            
-                
-            }
-        } catch {
-            print(error)
-        }
-    }
+
 }

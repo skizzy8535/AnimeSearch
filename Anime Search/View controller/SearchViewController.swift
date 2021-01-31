@@ -102,6 +102,13 @@ class SearchViewController: UIViewController,UISearchResultsUpdating,UITableView
         }
     }
     
+    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+           animeResults.removeAll()
+           mangaResults.removeAll()
+           personResults.removeAll()
+           characterResults.removeAll()
+    }
+    
     func getSearchedAnime(){
         type = "anime"
         fetchSearchTask = clientSide.getSearchResult(type: type!, keyword:  searchController.searchBar.text, completion: {[self]  (searchTopAnime, error) in
@@ -267,10 +274,19 @@ class SearchViewController: UIViewController,UISearchResultsUpdating,UITableView
         var results :SearchResults
         
          if selectedSegment.selectedSegmentIndex == 0 {
-            let newFavoriteAnime = NSEntityDescription.insertNewObject(forEntityName: "FavoriteAnime", into: context) as! FavoriteAnime
+        
+       //      如果只有引入一次單一的 Core Data Ｍodel 可以呼叫 Core Data Ｍodel 的 init(context:)方法來操作 Managed Object
+       //      let newFavoriteAnime = FavoriteAnime(context: context)
+            
+       //      如果Core Data Ｍodel 引入全部的畫面超過一次 , 使用 init(context:)會出現類似下列的錯誤訊息
+            
+       //   CoreData: warning: Multiple NSEntityDescriptions claim the NSManagedObject subclass 'Favorite'Anime' so +entity is unable to disambiguate.
+       //  2021–01–10 09:27:50.813787+1000 [error] warning: 'FavoriteAnime' (0x600001b88160) from NSManagedObjectModel (0x600000f9f7f0) claims 'FavoriteAnime'.
+       
+       //  比較好的新增Managed Object 方法
+       let newFavoriteAnime = NSEntityDescription.insertNewObject(forEntityName: "FavoriteAnime", into: context) as! FavoriteAnime
             
                 results = animeResults[indexPath.row]
-            
                 let optionMenu = UIAlertController(title: nil, message: "Choose Option", preferredStyle: .actionSheet)
                 let addToFavorite = UIAlertAction(title: "Add to Favorite Anime", style: .default) { (action) in
                
@@ -310,6 +326,7 @@ class SearchViewController: UIViewController,UISearchResultsUpdating,UITableView
                     newFavoriteMagna.imageUrl = results.imageURL
                     newFavoriteMagna.identity = Float(results.identity)
                     newFavoriteMagna.isSaved = true
+                    self.container.checkIfDuplicate(FavoriteManga.self, identity: newFavoriteMagna.identity)
                     self.container.saveContext()
             }
             
@@ -336,6 +353,7 @@ class SearchViewController: UIViewController,UISearchResultsUpdating,UITableView
                     newFavoritePerson.imageUrl = results.imageURL
                     newFavoritePerson.identity = Float(results.identity)
                     newFavoritePerson.isSaved = true
+                    self.container.checkIfDuplicate(FavoritePerson.self, identity: newFavoritePerson.identity)
                     self.container.saveContext()
         }
                 let goToDetailPage = UIAlertAction(title: "See Person Details..", style: .default) { (action) in
@@ -362,6 +380,7 @@ class SearchViewController: UIViewController,UISearchResultsUpdating,UITableView
                     newFavoriteCharacter.imageUrl = results.imageURL
                     newFavoriteCharacter.identity = Float(results.identity)
                     newFavoriteCharacter.isSaved = true
+                    self.container.checkIfDuplicate(FavoriteCharacter.self, identity: newFavoriteCharacter.identity)
                     self.container.saveContext()
 
           }
@@ -419,14 +438,6 @@ class SearchViewController: UIViewController,UISearchResultsUpdating,UITableView
             searchControllerHelper()
         }
     }
-    
-    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
-           animeResults.removeAll()
-           mangaResults.removeAll()
-           personResults.removeAll()
-           characterResults.removeAll()
-    }
-    
     
     func ifNoConnection(){
         let alertController = UIAlertController(title: " No Internet Collection ", message: "Make sure that Wi-Fi or cellular data is turned on" ,preferredStyle: .alert)

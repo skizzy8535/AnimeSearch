@@ -12,6 +12,8 @@ import UIKit
 class CharacterResultViewController: UIViewController{
     
     var selection = 0
+  
+    
 
 
     var characterInfo:ShowCharacterResult?
@@ -41,6 +43,12 @@ class CharacterResultViewController: UIViewController{
         }
         collectionMonitor.start(queue: DispatchQueue.global())
         
+//        URLSession.shared.dataTask(with: URLRequest) { (data, response, error) in
+//            if let data = data
+//              let response = response as? HTTPURLResponse{
+//                
+//            }
+//        }
     }
     
     func getCharacter(){

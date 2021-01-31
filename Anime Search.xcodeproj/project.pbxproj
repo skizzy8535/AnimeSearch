@@ -37,6 +37,7 @@
 		179417C325B96CC5005041C3 /* ShowACGInformation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 179417C225B96CC5005041C3 /* ShowACGInformation.swift */; };
 		179417C825B977A4005041C3 /* ScheduleViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 179417C725B977A4005041C3 /* ScheduleViewController.swift */; };
 		179B08BC25BEA83B00F94C73 /* characterApperanceCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 179B08BB25BEA83B00F94C73 /* characterApperanceCollectionViewCell.swift */; };
+		17D203D525C6A118003CC16A /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 17D203D425C6A118003CC16A /* WebKit.framework */; };
 		17D2622325B7114700BF0F4A /* AnimeDataFromJikan.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17D2622225B7114700BF0F4A /* AnimeDataFromJikan.swift */; };
 		17DAE40825BD61B9004E6832 /* ShowSchedule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17DAE40725BD61B9004E6832 /* ShowSchedule.swift */; };
 		17DAE40D25BDAC3E004E6832 /* supportingCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17DAE40C25BDAC3E004E6832 /* supportingCollectionViewCell.swift */; };
@@ -98,6 +99,7 @@
 		179417C225B96CC5005041C3 /* ShowACGInformation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShowACGInformation.swift; sourceTree = "<group>"; };
 		179417C725B977A4005041C3 /* ScheduleViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleViewController.swift; sourceTree = "<group>"; };
 		179B08BB25BEA83B00F94C73 /* characterApperanceCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = characterApperanceCollectionViewCell.swift; sourceTree = "<group>"; };
+		17D203D425C6A118003CC16A /* WebKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebKit.framework; path = System/Library/Frameworks/WebKit.framework; sourceTree = SDKROOT; };
 		17D2622225B7114700BF0F4A /* AnimeDataFromJikan.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnimeDataFromJikan.swift; sourceTree = "<group>"; };
 		17DAE40725BD61B9004E6832 /* ShowSchedule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShowSchedule.swift; sourceTree = "<group>"; };
 		17DAE40C25BDAC3E004E6832 /* supportingCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = supportingCollectionViewCell.swift; sourceTree = "<group>"; };
@@ -123,6 +125,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				17D203D525C6A118003CC16A /* WebKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -147,13 +150,13 @@
 			isa = PBXGroup;
 			children = (
 				1733A0C8259EEDD700A3CE8E /* RankAnimeViewController.swift */,
-				175FAC17259F356A00D8B626 /* RankMagnaViewController.swift */,
 				17F872B325A35F3C00D695B8 /* SearchViewController.swift */,
+				1774D89F25BB065E00D0B68B /* PersonResultViewController.swift */,
 				179417C725B977A4005041C3 /* ScheduleViewController.swift */,
 				1774D89525BB056400D0B68B /* AnimeResultViewController.swift */,
 				176A7A5825ABBD20001D23E4 /* FavoritesViewController.swift */,
+				175FAC17259F356A00D8B626 /* RankMagnaViewController.swift */,
 				1774D89A25BB05C200D0B68B /* MangaResultViewController.swift */,
-				1774D89F25BB065E00D0B68B /* PersonResultViewController.swift */,
 				1774D8A425BB068300D0B68B /* CharacterResultViewController.swift */,
 			);
 			path = "View controller";
@@ -199,6 +202,14 @@
 			path = Network;
 			sourceTree = "<group>";
 		};
+		17D203D325C6A118003CC16A /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				17D203D425C6A118003CC16A /* WebKit.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		17EAE548259C2A8900243201 = {
 			isa = PBXGroup;
 			children = (
@@ -206,6 +217,7 @@
 				17EAE56A259C2A8A00243201 /* Anime SearchTests */,
 				17EAE575259C2A8A00243201 /* Anime SearchUITests */,
 				17EAE552259C2A8900243201 /* Products */,
+				17D203D325C6A118003CC16A /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};

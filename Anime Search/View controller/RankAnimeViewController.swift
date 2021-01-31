@@ -4,7 +4,16 @@
 //
 //  Created by 林祐辰 on 2021/1/1.
 //
-
+/*
+ func myClosure(param1: Int, add: (Int, Int) -> Int) -> Int {
+     return add(param1, 5)
+ }
+ 
+ myClosure(param1, add: (Int, Int) -> Int){
+ 
+ 
+ }
+ */
 import UIKit
 import Network
 
@@ -76,9 +85,16 @@ class RankAnimeViewController: UIViewController,UITableViewDelegate,UITableViewD
         view.addConstraint(verticalConstraint)
     }
     
+    
+    
+    
+    
+    
     func getTopRank(){
         subtype = "favorite"
         downloadTask = clientSide.getAnimeList(query: query, type: type, page: page, subtype: subtype!, completion: { [self](topAnime, error) in
+            
+            
             self.downloadTask = nil
             
             if let rankItems = topAnime?.top{
@@ -88,7 +104,26 @@ class RankAnimeViewController: UIViewController,UITableViewDelegate,UITableViewD
                 }
             }
         })
+        
+    
     }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+   
+    
+    
+    
+    
+    
+    
     
     func getTopAiring(){
         subtype = "airing"
@@ -103,6 +138,7 @@ class RankAnimeViewController: UIViewController,UITableViewDelegate,UITableViewD
             }
             
         })
+        
     }
     
     func getTopUpcoming(){
@@ -117,7 +153,8 @@ class RankAnimeViewController: UIViewController,UITableViewDelegate,UITableViewD
                 }
             }
             
-        })
+          }
+        )
     }
     
     func getTopMovie(){
