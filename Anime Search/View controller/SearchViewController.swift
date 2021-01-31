@@ -274,15 +274,15 @@ class SearchViewController: UIViewController,UISearchResultsUpdating,UITableView
         var results :SearchResults
         
          if selectedSegment.selectedSegmentIndex == 0 {
-        
-       //      如果只有引入一次單一的 Core Data Ｍodel 可以呼叫 Core Data Ｍodel 的 init(context:)方法來操作 Managed Object
-       //      let newFavoriteAnime = FavoriteAnime(context: context)
+    /*
+            如果只有引入一次單一的 Core Data Ｍodel 可以呼叫 Core Data Ｍodel 的 init(context:)方法來操作 Managed Object
+            let newFavoriteAnime = FavoriteAnime(context: context)
             
-       //      如果Core Data Ｍodel 引入全部的畫面超過一次 , 使用 init(context:)會出現類似下列的錯誤訊息
+        如果Core Data Ｍodel 引入全部的畫面超過一次 , 使用 init(context:)會出現類似下列的錯誤訊息
             
-       //   CoreData: warning: Multiple NSEntityDescriptions claim the NSManagedObject subclass 'Favorite'Anime' so +entity is unable to disambiguate.
-       //  2021–01–10 09:27:50.813787+1000 [error] warning: 'FavoriteAnime' (0x600001b88160) from NSManagedObjectModel (0x600000f9f7f0) claims 'FavoriteAnime'.
-       
+       CoreData: warning: Multiple NSEntityDescriptions claim the NSManagedObject subclass 'Favorite'Anime' so +entity is unable to disambiguate.
+        2021–01–10 09:27:50.813787+1000 [error] warning: 'FavoriteAnime' (0x600001b88160) from NSManagedObjectModel (0x600000f9f7f0) claims 'FavoriteAnime'.
+       */
        //  比較好的新增Managed Object 方法
        let newFavoriteAnime = NSEntityDescription.insertNewObject(forEntityName: "FavoriteAnime", into: context) as! FavoriteAnime
             
@@ -304,10 +304,12 @@ class SearchViewController: UIViewController,UISearchResultsUpdating,UITableView
                     self.selection = results.identity
                     self.performSegue(withIdentifier: "showAnimeSearchSegue", sender: self )
                     self.container.checkIfExists(FavoriteAnime.self, identity: newFavoriteAnime.identity)
+                    self.container.saveContext()
                 }
             
                 let cancelAction = UIAlertAction(title: "Cancel", style: .cancel) { (action) in
                     self.container.checkIfExists(FavoriteAnime.self, identity: newFavoriteAnime.identity)
+                    self.container.saveContext()
                 }
             
                 optionMenu.addAction(addToFavorite)
@@ -334,9 +336,11 @@ class SearchViewController: UIViewController,UISearchResultsUpdating,UITableView
                     self.selection = results.identity
                     self.performSegue(withIdentifier: "showMangaSearchSegue", sender: self )
                     self.container.checkIfExists(FavoriteManga.self, identity: newFavoriteMagna.identity)
+                    self.container.saveContext()
             }
                 let cancelAction = UIAlertAction(title: "Cancel", style: .cancel) { (action) in
                     self.container.checkIfExists(FavoriteManga.self, identity: newFavoriteMagna.identity)
+                    self.container.saveContext()
                 }
         
                optionMenu.addAction(addToFavorite)
@@ -360,6 +364,7 @@ class SearchViewController: UIViewController,UISearchResultsUpdating,UITableView
                     self.selection = results.identity
                     self.performSegue(withIdentifier: "showPersonSearchSegue", sender: self )
                     self.container.checkIfExists(FavoritePerson.self, identity: newFavoritePerson.identity)
+                    self.container.saveContext()
             }
             
                 let cancelAction = UIAlertAction(title: "Cancel", style: .cancel){ (action) in
@@ -389,10 +394,12 @@ class SearchViewController: UIViewController,UISearchResultsUpdating,UITableView
                     print(self.selection)
                     self.performSegue(withIdentifier: "showCharacterSearchSegue", sender: self )
                     self.container.checkIfExists(FavoriteCharacter.self, identity: newFavoriteCharacter.identity)
+                    self.container.saveContext()
             }
             
                 let cancelAction = UIAlertAction(title: "Cancel", style: .cancel){ (action) in
                     self.container.checkIfExists(FavoriteCharacter.self, identity: newFavoriteCharacter.identity)
+                    self.container.saveContext()
                 }
             
                optionMenu.addAction(addToFavorite)
